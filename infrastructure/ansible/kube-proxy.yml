@@ -1,0 +1,5 @@
+- name: Configure Kubernetes Proxy Machine
+  hosts: kube-proxy
+  become: yes
+  roles:
+    - kube-proxy

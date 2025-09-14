@@ -1,0 +1,43 @@
+---
+- name: Initialize Kubernetes Master
+  block:
+    - name: Copy kubeadm-config.yaml file
+      copy:
+        src: kubeadm-config.yaml
+        dest: /etc/kubernetes/kubeadm-config.yaml
+    
+    - name: Ensure kube_admin user exists with home directory
+      ansible.builtin.user:
+        name: kube_admin
+        state: present
+        shell: /bin/bash
+        create_home: yes
+        home: /home/kube_admin
+    
+    - name: Initialize the cluster
+      shell: kubeadm init --config /etc/kubernetes/kubeadm-config.yaml >> cluster_initialized.log
+      args:
+        chdir: /home/kube_admin
+        creates: cluster_initialized.log
+
+    - name: Create .kube directory
+      become_user: kube_admin
+      file:
+        path: $HOME/.kube
+        state: directory
+        mode: 0755
+
+    - name: Copy admin.conf to User's kube config
+      copy:
+        src: /etc/kubernetes/admin.conf
+        dest: /home/kube_admin/.kube/config
+        remote_src: yes
+        owner: kube_admin
+        group: kube_admin
+
+    - name: Install Pod Network
+      become_user: kube_admin
+      shell: kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml >> pod_network_setup.log
+      args:
+        chdir: $HOME
+        creates: pod_network_setup.log

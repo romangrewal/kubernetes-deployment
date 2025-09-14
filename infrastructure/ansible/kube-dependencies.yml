@@ -1,0 +1,12 @@
+- name: Configure Kubernetes Dependencies
+  hosts: kube-workers, kube-master
+  become: yes
+  roles:
+    - kube-dependencies
+
+- name: Install kube-ctl
+  hosts: kube-master
+  become: yes
+  roles:
+    - kube-ctl
+    - fix-containerd-kube 

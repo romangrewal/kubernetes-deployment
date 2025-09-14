@@ -1,0 +1,47 @@
+- name: Configure Kubernetes repo
+  copy:
+    dest: /etc/yum.repos.d/kubernetes.repo
+    content: |
+      [kubernetes]
+      name=Kubernetes
+      baseurl=https://pkgs.k8s.io/core:/stable:/v1.34/rpm/
+      enabled=1
+      gpgcheck=1
+      gpgkey=https://pkgs.k8s.io/core:/stable:/v1.34/rpm/repodata/repomd.xml.key
+
+- name: Install kubectl
+  ansible.builtin.yum:
+    name: kubectl
+    state: present
+
+- name: Create /home/{{ ansible_user }}/.kube directory
+  ansible.builtin.file:
+    path: /{{ ansible_user }}/.kube
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root
+
+- name: Copy kubeconfig to proxy machine
+  copy:
+    src: config
+    dest: /{{ ansible_user }}/.kube/config
+    mode: '0600'
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+
+- name: Verify kubectl connectivity
+  command: kubectl get nodes
+  register: kubectl_output
+  changed_when: false
+  failed_when: kubectl_output.rc != 0
+
+- name: Ensure correct kubectl context
+  command: kubectl config current-context
+  register: context_check
+  changed_when: false
+
+- name: Show kubectl output
+  debug:
+    var: kubectl_output.stdout
+

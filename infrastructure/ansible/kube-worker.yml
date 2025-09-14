@@ -1,0 +1,5 @@
+- name: Initialize Kubernetes Worker Nodes
+  hosts: kube-workers
+  become: yes
+  roles:
+    - kube-worker-init
