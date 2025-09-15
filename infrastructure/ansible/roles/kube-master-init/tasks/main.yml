@@ -13,7 +13,67 @@
         shell: /bin/bash
         create_home: yes
         home: /home/kube_admin
+
+    - name: Ensure containerd group exists
+      group:
+        name: containerd
+        state: present
+
+    - name: Add user to containerd group
+      user:
+        name: kube_admin
+        groups: containerd
+        append: yes
+
+    - name: Create systemd override directory for containerd
+      file:
+        path: /etc/systemd/system/containerd.service.d
+        state: directory
+        mode: '0755'
+
+    - name: Override containerd socket permissions
+      copy:
+        dest: /etc/systemd/system/containerd.service.d/override.conf
+        content: |
+          [Service]
+          ExecStartPost=/bin/bash -c 'chmod 0660 /run/containerd/containerd.sock && chown root:containerd /run/containerd/containerd.sock'
     
+    - name: Unconditionally reboot the machine with all defaults
+      ansible.builtin.reboot:
+    
+        #    - name: Restart specific_service
+          #      ansible.builtin.systemd:
+          #        name: containerd.service  # Replace with the actual service name
+          #        state: restarted
+          ###############fix permissions
+
+    - name: Disable Swap
+      shell: swapoff -a
+  
+    - name: Ensure log-reader group exists
+      group:
+        name: log-reader
+        state: present
+
+    - name: Add user to log-reader group
+      user:
+        name: kube_admin
+        groups: log-reader
+        append: yes
+
+    - name: Set group ownership on pod log directory
+      file:
+        path: /var/log/pods
+        group: log-reader
+        recurse: yes
+        state: directory
+
+    - name: Set read+execute permissions for group
+      file:
+        path: /var/log/pods
+        mode: '0750'
+        recurse: yes
+
     - name: Initialize the cluster
       shell: kubeadm init --config /etc/kubernetes/kubeadm-config.yaml >> cluster_initialized.log
       args:
@@ -41,3 +101,12 @@
       args:
         chdir: $HOME
         creates: pod_network_setup.log
+
+    - name: Ensure firewalld is running and port 8080/tcp is open
+      ansible.posix.firewalld:
+        port: 6443/tcp
+        permanent: true
+        state: enabled
+        immediate: true
+
+### run kubelet containers at restart

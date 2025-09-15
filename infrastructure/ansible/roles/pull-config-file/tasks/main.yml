@@ -1,0 +1,6 @@
+---
+- name: Transfer file from source to target host
+  fetch:
+    src: /home/kube_admin/.kube/config
+    dest: /tmp/
+    flat: yes

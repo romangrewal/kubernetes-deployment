@@ -27,23 +27,14 @@
         replace: 'runtime_type = "io.containerd.runc.v2"'
 
     - name: Enable SystemdCgroup
-      ansible.builtin.lineinfile:
+      ansible.builtin.replace:
         path: /etc/containerd/config.toml
-        insertafter: 'runtime_type = "io.containerd.runc.v2"'
-        line: '          SystemdCgroup = true'
-        state: present
+        regexp: 'SystemdCgroup = false'
+        replace: 'SystemdCgroup = true'
 
     - name: Restart containerd
       ansible.builtin.systemd:
         name: containerd
         state: restarted
         enabled: yes
-
-    - name: Set correct permissions on containerd.sock
-      ansible.builtin.file:
-        path: /var/run/containerd/containerd.sock
-        mode: '0660'
-        owner: root
-        group: root
-
 

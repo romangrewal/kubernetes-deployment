@@ -1,4 +1,15 @@
 ---
+- name: Create .kube directory
+  file:
+    path: $HOME/.kube
+    state: directory
+    mode: 0755
+
+- name: Copy config file to target host
+  copy:
+    src: /tmp/config
+    dest: ~/.kube/config
+
 - name: Configure Join Commands on Master Node
   block:
     - name: Retrieve Join Command
@@ -8,7 +19,6 @@
     - name: Set Join Command
       set_fact:
         join_command: "{{ join_command_raw.stdout_lines[0] }}"
-
     
 - name: Ensure kube_worker user exists with home directory
   ansible.builtin.user:
@@ -18,13 +28,23 @@
     create_home: yes
     home: /home/kube_worker
 
+- name: Display the custom fact
+  ansible.builtin.debug:
+    var: join_command
+
 - name: Join Worker Nodes
   block:
-    - name: Enable TCP port 6443 (On Master) is able to connect from Worker
-      wait_for: "host=69.164.221.35 port=6443 timeout=1"
+    - name: Ensure TCP port 6443 (On Master) is able to connect from Worker
+      wait_for: "host=66.228.41.195 port=6443 timeout=1"
 
-    - name: Join worker to cluster
-      shell: "{{ hostvars['69.164.221.35'].join_command }} >> node_joined.log"
-      args:
-        chdir: /home/kube_worker
-        creates: node_joined.log
+        #    - name: Join worker to cluster
+        #      host: kube-master
+        #      become: yes
+        #      block:
+        #      - name: run the damn play
+        #        shell: "{{ join_command }} >> node_joined.log"
+        #        args:
+        #          chdir: /home/kube_worker
+        #          creates: node_joined.log
+
+          #creates: /etc/kubernetes/kubelet.conf

@@ -1,5 +1,19 @@
+- name: Pull config file
+  hosts: kube-master
+  become: yes
+  roles:
+    - pull-config-file
+
 - name: Initialize Kubernetes Worker Nodes
   hosts: kube-workers
   become: yes
   roles:
     - kube-worker-init
+
+- name: Display the custom fact
+  hosts: kube-master
+  become: yes
+  vars:
+    join_command: "{{ hostvars['kube-workers'][0].join_command }}"
+  roles:
+    - pull-config-file
