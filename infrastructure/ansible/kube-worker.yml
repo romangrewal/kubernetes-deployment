@@ -8,12 +8,6 @@
   hosts: kube-workers
   become: yes
   roles:
+    - fix-containerd-kube 
     - kube-worker-init
 
-- name: Display the custom fact
-  hosts: kube-master
-  become: yes
-  vars:
-    join_command: "{{ hostvars['kube-workers'][0].join_command }}"
-  roles:
-    - pull-config-file

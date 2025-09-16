@@ -41,10 +41,11 @@
         #      host: kube-master
         #      become: yes
         #      block:
-        #      - name: run the damn play
-        #        shell: "{{ join_command }} >> node_joined.log"
-        #        args:
-        #          chdir: /home/kube_worker
-        #          creates: node_joined.log
+
+- name: run the damn play
+  shell: "{{ join_command }} >> node_joined.log"
+  args:
+    chdir: /home/kube_worker
+    creates: node_joined.log
 
           #creates: /etc/kubernetes/kubelet.conf
