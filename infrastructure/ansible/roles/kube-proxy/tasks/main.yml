@@ -24,7 +24,7 @@
 
 - name: Copy kubeconfig to proxy machine
   copy:
-    src: config
+    src: /tmp/config
     dest: /{{ ansible_user }}/.kube/config
     mode: '0600'
     owner: "{{ ansible_user }}"

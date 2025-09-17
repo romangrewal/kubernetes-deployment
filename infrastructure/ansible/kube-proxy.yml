@@ -1,3 +1,9 @@
+- name: Pull config file
+  hosts: kube-master
+  become: yes
+  roles:
+    - pull-config-file
+
 - name: Configure Kubernetes Proxy Machine
   hosts: kube-proxy
   become: yes
