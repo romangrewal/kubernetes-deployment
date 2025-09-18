@@ -16,10 +16,6 @@ collections/
 __pycache__/
 *.pyc
 
-# Inventory and host files (if dynamically generated)
-inventory.*
-hosts.*
-
 # OS-specific
 .DS_Store
 Thumbs.db
