@@ -1,0 +1,59 @@
+---
+- name: Upgrade Python to 3.10 on CentOS
+  block:
+    - name: Update system packages
+      yum:
+        name: "*"
+        state: latest
+        update_cache: yes
+
+    - name: Install build dependencies for Python
+      yum:
+        name:
+          - openssl-devel
+          - bzip2-devel
+          - libffi-devel
+        state: present
+
+    - name: Install Development Tools group
+      yum:
+        name: "@Development Tools"
+        state: present
+
+    - name: Download Python 3.10.x source
+      get_url:
+        url: "https://www.python.org/ftp/python/3.10.12/Python-3.10.12.tgz" # Use the latest stable 3.10.x version
+        dest: "/tmp/Python-3.10.12.tgz"
+        mode: '0644'
+
+    - name: Extract Python source
+      unarchive:
+        src: "/tmp/Python-3.10.12.tgz"
+        dest: "/tmp/"
+        remote_src: yes
+
+    - name: Configure Python 3.10
+      command: "./configure --enable-optimizations"
+      args:
+        chdir: "/tmp/Python-3.10.12"
+
+    - name: Compile and install Python 3.10 (make altinstall to avoid replacing default python)
+      command: "make altinstall"
+      args:
+        chdir: "/tmp/Python-3.10.12"
+
+    - name: Create symbolic link for python3.10
+      file:
+        src: "/usr/local/bin/python3.10"
+        dest: "/usr/bin/python3.10"
+        state: link
+        force: yes
+
+    - name: Verify Python 3.10 installation
+      command: "python3.10 -V"
+      register: python_version_check
+      changed_when: false
+
+    - name: Display Python 3.10 version
+      debug:
+        var: python_version_check.stdout

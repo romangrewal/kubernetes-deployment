@@ -8,4 +8,5 @@
   hosts: kube-proxy
   become: yes
   roles:
+    - update-python-version
     - kube-proxy
