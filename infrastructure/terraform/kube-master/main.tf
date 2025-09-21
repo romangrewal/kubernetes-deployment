@@ -72,6 +72,33 @@ resource "linode_firewall" "firewall" {
   }
 
   inbound {
+    label    = "etcd-server-client-api"
+    action   = "ACCEPT"
+    protocol = "TCP"
+    ports    = "2379-2380"
+    ipv4     = ["0.0.0.0/0"]
+    ipv6     = ["::/0"]
+  }
+
+  inbound {
+    label    = "kube-scheduler"
+    action   = "ACCEPT"
+    protocol = "TCP"
+    ports    = "10259"
+    ipv4     = ["0.0.0.0/0"]
+    ipv6     = ["::/0"]
+  }
+
+  inbound {
+    label    = "kube-controller-manager"
+    action   = "ACCEPT"
+    protocol = "TCP"
+    ports    = "10257"
+    ipv4     = ["0.0.0.0/0"]
+    ipv6     = ["::/0"]
+  }
+
+  inbound {
     label    = "allow-ping"
     action   = "ACCEPT"
     protocol = "ICMP"

@@ -1,0 +1,30 @@
+---
+- name: Set hostname using hostnamectl
+  ansible.builtin.hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: Ensure /etc/hostname reflects new hostname
+  ansible.builtin.lineinfile:
+    path: /etc/hostname
+    line: "{{ inventory_hostname }}"
+    create: yes
+
+- name: Update /etc/hosts entry
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    regexp: '^127\.0\.1\.1\s+'
+    line: "127.0.1.1 {{ inventory_hostname }}"
+    state: present
+
+- name: Create .kube directory
+  file:
+    path: $HOME/.kube
+    state: directory
+    mode: 0755
+
+- name: Copy config file to directory
+  copy:
+    src: /tmp/config
+    dest: ~/.kube/config
+
+

@@ -229,6 +229,8 @@ locals {
 locals {
   existing_content = fileexists("${path.module}/../../ansible/inventory.ini") ? file("${path.module}/../../ansible/inventory.ini") : ""
   new_line_to_add  = templatefile("${path.module}/inventory.tpl", {
+    name_worker_one = "worker-01"
+    name_worker_two = "worker-02"
     ip_worker_one = local.worker_one_ip[0]
     ip_worker_two = local.worker_two_ip[0]
   })

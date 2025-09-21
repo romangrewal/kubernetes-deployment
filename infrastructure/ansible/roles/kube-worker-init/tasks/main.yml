@@ -1,15 +1,4 @@
 ---
-- name: Create .kube directory
-  file:
-    path: $HOME/.kube
-    state: directory
-    mode: 0755
-
-- name: Copy config file to target host
-  copy:
-    src: /tmp/config
-    dest: ~/.kube/config
-
 - name: Configure Join Commands on Master Node
   block:
     - name: Retrieve Join Command
@@ -35,7 +24,7 @@
 - name: Join Worker Nodes
   block:
     - name: Ensure TCP port 6443 (On Master) is able to connect from Worker
-      wait_for: "host=66.228.41.195 port=6443 timeout=1"
+      wait_for: "host=45.79.155.46 port=6443 timeout=1"
 
         #    - name: Join worker to cluster
         #      host: kube-master
@@ -47,45 +36,3 @@
   args:
     chdir: /home/kube_worker
     creates: node_joined.log
-
-- name: Ensure metallb port is open
-  ansible.posix.firewalld:
-    port: 7946/tcp
-    permanent: true
-    state: enabled
-    immediate: true
-
-- name: Ensure 7946/udp is open
-  ansible.posix.firewalld:
-    port: 7946/udp
-    permanent: true
-    state: enabled
-    immediate: true
-
-- name: Ensure kube api port is open
-  ansible.posix.firewalld:
-    port: 10250/tcp
-    permanent: true
-    state: enabled
-    immediate: true
-
-- name: Ensure kube proxy port is open
-  ansible.posix.firewalld:
-    port: 10256/tcp
-    permanent: true
-    state: enabled
-    immediate: true
-
-- name: Ensure NodePort TCP service ports are open
-  ansible.posix.firewalld:
-    port: 30000-32767/tcp
-    permanent: true
-    state: enabled
-    immediate: true
-
-- name: Ensure NodePort UDP service ports are open
-  ansible.posix.firewalld:
-    port: 30000-32767/udp
-    permanent: true
-    state: enabled
-    immediate: true

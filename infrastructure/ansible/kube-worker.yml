@@ -8,6 +8,8 @@
   hosts: kube-workers
   become: yes
   roles:
-    - fix-containerd-kube 
+    - fix-containerd-kube
+    - kube-worker-ports
+    - kube-worker-setup-host 
     - kube-worker-init
 

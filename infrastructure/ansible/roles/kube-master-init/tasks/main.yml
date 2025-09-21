@@ -1,6 +1,55 @@
 ---
 - name: Initialize Kubernetes Master
   block:
+    - name: Ensure port 6443/tcp is open
+      ansible.posix.firewalld:
+        port: 6443/tcp
+        permanent: true
+        state: enabled
+        immediate: true
+    
+    - name: Ensure port 2379-2380/tcp is open
+      ansible.posix.firewalld:
+        port: 2379-2380/tcp
+        permanent: true
+        state: enabled
+        immediate: true
+    
+    - name: Ensure port 10250/tcp is open
+      ansible.posix.firewalld:
+        port: 10250/tcp
+        permanent: true
+        state: enabled
+        immediate: true
+    
+    - name: Ensure port 10259/tcp is open
+      ansible.posix.firewalld:
+        port: 10259/tcp
+        permanent: true
+        state: enabled
+        immediate: true
+    
+    - name: Ensure port 10257/tcp is open
+      ansible.posix.firewalld:
+        port: 10257/tcp
+        permanent: true
+        state: enabled
+        immediate: true
+
+    - name: Ensure 7946/tcp is open
+      ansible.posix.firewalld:
+        port: 7946/tcp
+        permanent: true
+        state: enabled
+        immediate: true
+
+    - name: Ensure 7946/udp is open
+      ansible.posix.firewalld:
+        port: 7946/udp
+        permanent: true
+        state: enabled
+        immediate: true
+
     - name: Copy kubeadm-config.yaml file
       copy:
         src: kubeadm-config.yaml
@@ -102,25 +151,5 @@
         chdir: $HOME
         creates: pod_network_setup.log
 
-    - name: Ensure port 6443/tcp is open
-      ansible.posix.firewalld:
-        port: 6443/tcp
-        permanent: true
-        state: enabled
-        immediate: true
-
-    - name: Ensure 7946/tcp is open
-      ansible.posix.firewalld:
-        port: 7946/tcp
-        permanent: true
-        state: enabled
-        immediate: true
-
-    - name: Ensure 7946/udp is open
-      ansible.posix.firewalld:
-        port: 7946/udp
-        permanent: true
-        state: enabled
-        immediate: true
 
 ### run kubelet containers at restart
