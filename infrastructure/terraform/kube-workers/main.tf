@@ -38,6 +38,15 @@ resource "linode_firewall" "firewall-kube-worker-1" {
     ipv4     = ["0.0.0.0/0"]
     ipv6     = ["::/0"]
   }
+  
+  inbound {
+    label    = "allow-metallb-speaker-node"
+    action   = "ACCEPT"
+    protocol = "TCP"
+    ports    = "7946"
+    ipv4     = ["0.0.0.0/0"]
+    ipv6     = ["::/0"]
+  }
 
   inbound {
     label    = "allow-ping"
@@ -93,6 +102,15 @@ resource "linode_firewall" "firewall-kube-worker-2" {
     action   = "ACCEPT"
     protocol = "TCP"
     ports    = "443"
+    ipv4     = ["0.0.0.0/0"]
+    ipv6     = ["::/0"]
+  }
+  
+  inbound {
+    label    = "allow-metallb-speaker-node"
+    action   = "ACCEPT"
+    protocol = "TCP"
+    ports    = "7946"
     ipv4     = ["0.0.0.0/0"]
     ipv6     = ["::/0"]
   }

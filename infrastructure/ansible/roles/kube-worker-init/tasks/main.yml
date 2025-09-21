@@ -48,4 +48,10 @@
     chdir: /home/kube_worker
     creates: node_joined.log
 
-          #creates: /etc/kubernetes/kubelet.conf
+
+- name: Ensure firewalld is running and metallb port is open
+  ansible.posix.firewalld:
+    port: 7946/tcp
+    permanent: true
+    state: enabled
+    immediate: true
