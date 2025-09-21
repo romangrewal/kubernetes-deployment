@@ -52,6 +52,24 @@ resource "linode_firewall" "firewall" {
     ipv4     = ["0.0.0.0/0"]
     ipv6     = ["::/0"]
   }
+  
+  inbound {
+    label    = "allow-metallb-push-pull-tcp"
+    action   = "ACCEPT"
+    protocol = "TCP"
+    ports    = "7946"
+    ipv4     = ["0.0.0.0/0"]
+    ipv6     = ["::/0"]
+  }
+  
+  inbound {
+    label    = "allow-metallb-push-pull-udp"
+    action   = "ACCEPT"
+    protocol = "UDP"
+    ports    = "7946"
+    ipv4     = ["0.0.0.0/0"]
+    ipv6     = ["::/0"]
+  }
 
   inbound {
     label    = "allow-ping"

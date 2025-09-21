@@ -40,10 +40,55 @@ resource "linode_firewall" "firewall-kube-worker-1" {
   }
   
   inbound {
-    label    = "allow-metallb-speaker-node"
+    label    = "allow-metallb-speaker-node-tcp"
     action   = "ACCEPT"
     protocol = "TCP"
     ports    = "7946"
+    ipv4     = ["0.0.0.0/0"]
+    ipv6     = ["::/0"]
+  }
+  
+  inbound {
+    label    = "allow-metallb-speaker-node-udp"
+    action   = "ACCEPT"
+    protocol = "UDP"
+    ports    = "7946"
+    ipv4     = ["0.0.0.0/0"]
+    ipv6     = ["::/0"]
+  }
+
+  inbound {
+    label    = "allow-kube-api-port"
+    action   = "ACCEPT"
+    protocol = "TCP"
+    ports    = "10250"
+    ipv4     = ["0.0.0.0/0"]
+    ipv6     = ["::/0"]
+  }
+
+  inbound {
+    label    = "allow-kube-proxy-port"
+    action   = "ACCEPT"
+    protocol = "TCP"
+    ports    = "10256"
+    ipv4     = ["0.0.0.0/0"]
+    ipv6     = ["::/0"]
+  }
+
+  inbound {
+    label    = "allow-nodeport-services-tcp"
+    action   = "ACCEPT"
+    protocol = "TCP"
+    ports    = "30000-32767"
+    ipv4     = ["0.0.0.0/0"]
+    ipv6     = ["::/0"]
+  }
+
+  inbound {
+    label    = "allow-nodeport-services-udp"
+    action   = "ACCEPT"
+    protocol = "UDP"
+    ports    = "30000-32767"
     ipv4     = ["0.0.0.0/0"]
     ipv6     = ["::/0"]
   }
@@ -110,6 +155,42 @@ resource "linode_firewall" "firewall-kube-worker-2" {
     label    = "allow-metallb-speaker-node"
     action   = "ACCEPT"
     protocol = "TCP"
+    ports    = "7946"
+    ipv4     = ["0.0.0.0/0"]
+    ipv6     = ["::/0"]
+  }
+
+  inbound {
+    label    = "allow-kube-api-port"
+    action   = "ACCEPT"
+    protocol = "TCP"
+    ports    = "10250"
+    ipv4     = ["0.0.0.0/0"]
+    ipv6     = ["::/0"]
+  }
+
+  inbound {
+    label    = "allow-kube-proxy-port"
+    action   = "ACCEPT"
+    protocol = "TCP"
+    ports    = "10256"
+    ipv4     = ["0.0.0.0/0"]
+    ipv6     = ["::/0"]
+  }
+
+  inbound {
+    label    = "allow-metallb-speaker-node-tcp"
+    action   = "ACCEPT"
+    protocol = "TCP"
+    ports    = "7946"
+    ipv4     = ["0.0.0.0/0"]
+    ipv6     = ["::/0"]
+  }
+  
+  inbound {
+    label    = "allow-metallb-speaker-node-udp"
+    action   = "ACCEPT"
+    protocol = "UDP"
     ports    = "7946"
     ipv4     = ["0.0.0.0/0"]
     ipv6     = ["::/0"]

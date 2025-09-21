@@ -48,10 +48,44 @@
     chdir: /home/kube_worker
     creates: node_joined.log
 
-
-- name: Ensure firewalld is running and metallb port is open
+- name: Ensure metallb port is open
   ansible.posix.firewalld:
     port: 7946/tcp
+    permanent: true
+    state: enabled
+    immediate: true
+
+- name: Ensure 7946/udp is open
+  ansible.posix.firewalld:
+    port: 7946/udp
+    permanent: true
+    state: enabled
+    immediate: true
+
+- name: Ensure kube api port is open
+  ansible.posix.firewalld:
+    port: 10250/tcp
+    permanent: true
+    state: enabled
+    immediate: true
+
+- name: Ensure kube proxy port is open
+  ansible.posix.firewalld:
+    port: 10256/tcp
+    permanent: true
+    state: enabled
+    immediate: true
+
+- name: Ensure NodePort TCP service ports are open
+  ansible.posix.firewalld:
+    port: 30000-32767/tcp
+    permanent: true
+    state: enabled
+    immediate: true
+
+- name: Ensure NodePort UDP service ports are open
+  ansible.posix.firewalld:
+    port: 30000-32767/udp
     permanent: true
     state: enabled
     immediate: true

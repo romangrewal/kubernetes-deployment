@@ -102,9 +102,23 @@
         chdir: $HOME
         creates: pod_network_setup.log
 
-    - name: Ensure firewalld is running and port 8080/tcp is open
+    - name: Ensure port 6443/tcp is open
       ansible.posix.firewalld:
         port: 6443/tcp
+        permanent: true
+        state: enabled
+        immediate: true
+
+    - name: Ensure 7946/tcp is open
+      ansible.posix.firewalld:
+        port: 7946/tcp
+        permanent: true
+        state: enabled
+        immediate: true
+
+    - name: Ensure 7946/udp is open
+      ansible.posix.firewalld:
+        port: 7946/udp
         permanent: true
         state: enabled
         immediate: true
